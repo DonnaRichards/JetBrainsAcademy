@@ -1,0 +1,208 @@
+package machine;
+
+import java.util.Scanner;
+
+public class CoffeeMachine {
+
+    final static Scanner in = new Scanner(System.in);
+    static int cashBalance = 550;
+    static int waterStock = 400;
+    static int milkStock = 540;
+    static int coffeeStock = 120;
+    static int cupStock = 9;
+
+    static void printState() {
+        System.out.println("\nThe coffee machine has: ");
+        System.out.printf("%d ml of water\n", waterStock);
+        System.out.printf("%d ml of milk\n", milkStock);
+        System.out.printf("%d g of coffee beans\n", coffeeStock);
+        System.out.printf("%d disposable cups\n", cupStock);
+        System.out.printf("$%d of money\n\n", cashBalance);
+    }
+
+    static int getNumber(String prompt) {
+        int num;
+        // code from course using regex to check for number
+        //        String input = scanner.nextLine();
+        //        if (input.matches("\\d+"))
+
+        do {
+            System.out.println(prompt);
+            while (!in.hasNextInt()) {
+                System.out.println("That's not a number!");
+                in.next();
+            }
+            num = in.nextInt();
+            if (num < 0) {
+                System.out.println("Positive number or zero expected");
+            }
+        } while (num < 0);
+        return num;
+    }
+
+    static boolean checkWater(int waterNeeded) {
+        if (Math.abs(waterNeeded) <= waterStock) {
+            return true;
+        } else {
+            System.out.println("Sorry, not enough water!");
+            return false;
+        }
+    }
+
+    static void updateWater(int waterUsed) {
+        waterStock += waterUsed;
+    }
+
+    static boolean checkMilk(int milkNeeded) {
+        if (Math.abs(milkNeeded) <= milkStock) {
+            return true;
+        } else {
+            System.out.println("Sorry, not enough milk!");
+            return false;
+        }
+    }
+
+    static void updateMilk(int milkUsed) {
+        milkStock += milkUsed;
+    }
+
+    static boolean checkCoffeeBeans(int coffeeNeeded) {
+        if (Math.abs(coffeeNeeded) <= coffeeStock) {
+            return true;
+        } else {
+            System.out.println("Sorry, not enough coffee beans!");
+            return false;
+        }
+    }
+
+    static void updateCoffeeBeans(int coffeeUsed) {
+        coffeeStock += coffeeUsed;
+    }
+
+    static boolean checkCoffeeCups(int cupsNeeded) {
+        if (Math.abs(cupsNeeded) <= cupStock) {
+            return true;
+        } else {
+            System.out.println("Sorry, not enough cups!");
+            return false;
+        }
+    }
+
+    static void updateCoffeeCups(int cupsUsed) {
+        cupStock += cupsUsed;
+    }
+
+    static void updateCash(int price) {
+        cashBalance += price;
+    }
+
+    static void makeCoffee(int water, int milk, int coffeeBeans, int cups, int cost) {
+        if (checkWater(water) &&
+                checkMilk(milk) &&
+                checkCoffeeBeans(coffeeBeans) &&
+                checkCoffeeCups(cups)) {
+            System.out.println("I have enough resources, making you a coffee!");
+            updateWater(water);
+            updateMilk(milk);
+            updateCoffeeBeans(coffeeBeans);
+            updateCoffeeCups(cups);
+            updateCash(cost);
+        }
+    }
+
+    static void makeExpresso() {
+        final int water = -250;
+        final int milk = 0;
+        final int coffeeBeans = -16;
+        final int cups = -1;
+        final int price = 4;
+        makeCoffee(water, milk, coffeeBeans, cups, price);
+    }
+
+    static void makeLatte() {
+        final int water = -350;
+        final int milk = -75;
+        final int coffeeBeans = -20;
+        final int cups = -1;
+        final int price = 7;
+
+        makeCoffee(water, milk, coffeeBeans, cups, price);
+    }
+
+    static void makeCapuccino() {
+        final int water = -200;
+        final int milk = -100;
+        final int coffeeBeans = -12;
+        final int cups = -1;
+        final int price = 6;
+
+        makeCoffee(water, milk, coffeeBeans, cups, price);
+    }
+
+    static void buyCoffee() {
+        System.out.println("What do you want to buy? 1 - espresso, 2 - latte, 3 - cappuccino, back - to main menu: ");
+        String choice = in.nextLine();
+        switch (choice) {
+            case "1":
+                makeExpresso();
+                break;
+
+            case "2":
+                makeLatte();
+                break;
+
+            case "3":
+                makeCapuccino();
+                break;
+
+            case "back":
+                break;
+
+            default:
+                System.out.println("Invalid choice");
+        }
+    }
+
+    static void fillMachine() {
+        int water = getNumber("Write how many ml of water you want to add: ");
+        updateWater(water);
+        int milk = getNumber("Write how many ml of milk you want to add: ");
+        updateMilk(milk);
+        int coffee = getNumber("Write how many grams of coffee beans you want to add: ");
+        updateCoffeeBeans(coffee);
+        int cups = getNumber("Write how many disposable cups of coffee you want to add:");
+        updateCoffeeCups(cups);
+    }
+
+    static void takeCash() {
+        System.out.printf("I gave you $%d\n", cashBalance);
+        cashBalance = 0;
+    }
+
+    public static void main(String[] args) {
+
+        String action = "";
+        while (!action.equals("exit")) {
+            System.out.println("Write action (buy, fill, take, remaining, exit): ");
+            action = in.nextLine();
+            switch (action) {
+                case "buy":
+                    buyCoffee();
+                    break;
+
+                case "fill":
+                    fillMachine();
+                    break;
+
+                case "take":
+                    takeCash();
+                    break;
+
+                case "remaining":
+                    printState();
+                    break;
+
+            }
+        }
+    }
+}
